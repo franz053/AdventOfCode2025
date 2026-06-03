@@ -3,12 +3,12 @@ use std::fs;
 
 const CONNECTIONS: usize = 1000;
 
-struct UnionFind {
+struct Union {
     parent: Vec<usize>,
     size: Vec<usize>,
 }
 
-impl UnionFind {
+impl Union {
     fn new(n: usize) -> Self {
         Self {
             parent: (0..n).collect(),
@@ -16,16 +16,16 @@ impl UnionFind {
         }
     }
 
-    fn find_index(&mut self, x: usize) -> usize {
+    fn find_top(&mut self, x: usize) -> usize {
         if self.parent[x] != x {
-            self.parent[x] = self.find_index(self.parent[x]);
+            self.parent[x] = self.find_top(self.parent[x]);
         }
         self.parent[x]
     }
 
     fn union(&mut self, a: usize, b: usize) {
-        let mut ra = self.find_index(a);
-        let mut rb = self.find_index(b);
+        let mut ra = self.find_top(a);
+        let mut rb = self.find_top(b);
 
         if ra == rb {
             return;
@@ -81,7 +81,7 @@ fn main() {
         }
     }
 
-    let mut circuits = UnionFind::new(points.len());
+    let mut circuits = Union::new(points.len());
 
     for (_, i, j) in connections {
         circuits.union(i, j);
